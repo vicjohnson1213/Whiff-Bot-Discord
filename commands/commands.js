@@ -1,10 +1,22 @@
+const path = require('path');
 const _ = require('lodash');
 
-const commands = require('./');
+// Import all commands in this directory, excluding this one.
+const commands = require('require-all')({
+    dirname: __dirname,
+    filter: (filename) => {
+        if (filename === 'commands.js') {
+            return false;
+        }
+        
+        return `!${path.basename(filename, '.js')}`;
+    }
+});
 
 module.exports = {
     description: 'Displays a list of all available commands.',
     func: function(message) {
+        console.log(commands);
         const commandNames = _.sortBy(Object.keys(commands));
         const commandLengths = commandNames.map(n => n.length);
         const padSize = _.max(commandLengths) + 2;

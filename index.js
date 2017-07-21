@@ -1,6 +1,6 @@
 const Discord = require('discord.js');
 
-const commands = require('./commands');
+const commands = require('require-all')(__dirname + '/commands');
 const auth = require('./config/auth');
 
 const client = new Discord.Client();
