@@ -1,0 +1,17 @@
+{
+  "name": "whiff-bot",
+  "version": "1.0.0",
+  "description": "A Discord bot for Discord servers.",
+  "main": "index.js",
+  "dependencies": {
+    "discord.js": "^11.1.0",
+    "lodash": "^4.17.4"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon index.js"
+  },
+  "author": "",
+  "license": "ISC"
+}
