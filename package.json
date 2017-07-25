@@ -3,16 +3,26 @@
   "version": "1.0.0",
   "description": "A Discord bot for Discord servers.",
   "main": "index.js",
+  "scripts": {
+    "test": "karma start --single-run",
+    "start": "node index.js",
+    "karma": "karma"
+  },
   "dependencies": {
     "discord.js": "^11.1.0",
     "lodash": "^4.17.4",
     "require-all": "^2.2.0"
   },
-  "devDependencies": {},
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon index.js"
+  "devDependencies": {
+    "browserify": "^14.4.0",
+    "expect": "^1.20.2",
+    "jasmine-core": "^2.6.4",
+    "karma": "^1.7.0",
+    "karma-browserify": "^5.1.1",
+    "karma-chrome-launcher": "^2.2.0",
+    "karma-jasmine": "^1.1.0",
+    "watchify": "^3.9.0"
   },
-  "author": "",
+  "author": "Victor Johnson <vicjohnson1213@gmail.com>",
   "license": "ISC"
 }

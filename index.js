@@ -1,6 +1,6 @@
 const Discord = require('discord.js');
 
-const commands = require('require-all')(__dirname + '/commands');
+const commands = require('require-all')(__dirname + '/lib/commands');
 const auth = require('./config/auth');
 
 const client = new Discord.Client();
@@ -19,9 +19,9 @@ client.on('message', message => {
         let command = commands[commandName];
         let args = parts.slice(1);
         
-        command.func(message, args);
+        command.run(message, args);
     } else {
-        message.channel.send('That command doesn\'t exist. Use `!commands` to see a list of all available commands.');
+        message.channel.send(`!${commandName} is not a valid command. Use \`!commands\` to see a list of all available commands.`);
     }
 });
 
