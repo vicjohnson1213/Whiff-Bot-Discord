@@ -9,7 +9,7 @@ Just a little bot that brings some useful utilities to Discord.
 - All commands are prefixed with an exclamation point (e.g. `!command`).
 - Any options or arguments surrounded by `<...>` are required, while any surrounded by `[...]` are optional.
 
-### `groups [size] [channel]`
+### `groups <size> [channel]`
 
 Randomly splits all users in a voice channel into groups of a specified size.
 
@@ -17,7 +17,7 @@ Randomly splits all users in a voice channel into groups of a specified size.
 
 | Option | Default | Description |
 | ------ | ------- | ----------- |
-| size   | 2 | The size of the groups you want to form. |
+| size   | **required** | The size of the groups you want to form. |
 | channel | *General* | The voice channel to read users from. |
 
 ### `roll [sides]`
