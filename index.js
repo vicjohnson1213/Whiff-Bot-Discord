@@ -21,7 +21,8 @@ client.on('message', message => {
 
         command.run(message, args);
     } else {
-        message.channel.send(`\`${commandName}\` is not a valid command. Use \`!commands\` to see a list of all available commands.`);
+        let  errorResponse = `\`\`\`css\n [${commandName}] is not a valid command. Use [!commands] to see a list of all available commands.\`\`\``;
+        message.channel.send(errorResponse);
     }
 });
 
