@@ -28,7 +28,7 @@ Rolls an *n* sided die
 
 | Option | Default | Description |
 | ------ | ------- | ----------- |
-| sides | **required** | The number of sides on the die. |
+| sides | *100* | The number of sides on the die. |
 
 ### `straws [channel]`
 
