@@ -4,25 +4,14 @@
   "description": "A Discord bot for Discord servers.",
   "main": "index.js",
   "scripts": {
-    "test": "karma start --single-run",
-    "start": "node index.js",
-    "karma": "karma"
+    "start": "node index.js"
   },
   "dependencies": {
     "discord.js": "^11.4.2",
     "lodash": "^4.17.11",
     "require-all": "^2.2.0"
   },
-  "devDependencies": {
-    "browserify": "^14.4.0",
-    "expect": "^1.20.2",
-    "jasmine-core": "^2.6.4",
-    "karma": "^3.0.0",
-    "karma-browserify": "^5.1.1",
-    "karma-chrome-launcher": "^2.2.0",
-    "karma-jasmine": "^1.1.0",
-    "watchify": "^3.9.0"
-  },
+  "devDependencies": {},
   "author": "Victor Johnson <vicjohnson1213@gmail.com>",
   "license": "ISC"
 }
