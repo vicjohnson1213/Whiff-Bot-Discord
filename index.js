@@ -1,5 +1,6 @@
 const Discord = require('discord.js');
 
+const auth = require('./config/auth');
 const config = require('./config/config');
 const settingsManager = require('./lib/settings-manager');
 const audit = require('./lib/audit');
@@ -36,4 +37,4 @@ client.on('message', (message) => {
     messageHandler(message);
 });
 
-client.login(config.token);
+client.login(auth.token);
