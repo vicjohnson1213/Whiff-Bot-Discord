@@ -7,35 +7,33 @@ const messageHandler = require('./lib/message-handler');
 
 const client = new Discord.Client();
 
-let guildSettings;
-
 client.on('ready', () => {
     const guildIds = client.guilds.map((guild) => guild.id);
-    guildSettings = settingsManager.loadAll(guildIds);
+    settingsManager.loadAll(guildIds);
 });
 
 client.on('guildMemberAdd', (member) => {
-    audit.logMemberJoin(member, guildSettings[member.guild.id]);
+    audit.logMemberJoin(member);
 });
 
 client.on('guildMemberRemove', (member) => {
-    audit.logMemberLeave(member, guildSettings[member.guild.id]);
+    audit.logMemberLeave(member);
 });
 
 client.on('guildMemberUpdate', (oldMember, newMember) => {
-    audit.logMemberNameChange(oldMember, newMember, guildSettings[newMember.guild.id]);
+    audit.logMemberNameChange(oldMember, newMember);
 });
 
 client.on('guildBanAdd', (guild, user) => {
-    audit.logMemberBan(guild, user, guildSettings[guild.id]);
+    audit.logMemberBan(guild, user);
 });
 
 client.on('guildBanRemove', (guild, user) => {
-    audit.logMemberBanLifted(guild, user, guildSettings[guild.id]);
+    audit.logMemberBanLifted(guild, user);
 });
 
 client.on('message', (message) => {
-    messageHandler(message, guildSettings[message.guild.id]);
+    messageHandler(message);
 });
 
 client.login(config.token);
