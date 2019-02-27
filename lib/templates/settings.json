@@ -1,0 +1,15 @@
+{
+  "commandPrefix": "!",
+  "modRole": "Mod",
+  "audit": {
+    "channel": "audit-log",
+    "settingChange": true,
+    "member": {
+      "join": true,
+      "leave": true,
+      "ban": true,
+      "banLifted": true,
+      "nameChange": true
+    }
+  }
+}
