@@ -11,6 +11,23 @@ const client = new Discord.Client();
 client.on('ready', () => {
     const guildIds = client.guilds.map((guild) => guild.id);
     settingsManager.loadAll(guildIds);
+    client.user.setPresence({ game: { name: config.game }});
+});
+
+client.on('guildUpdate', (oldGuild, newGuild) => {
+    audit.logGuildUpdate(oldGuild, newGuild);
+});
+
+client.on('channelCreate', (channel) => {
+    audit.logChannelCreate(channel)
+});
+
+client.on('channelDelete', (channel) => {
+    audit.logChannelDelete(channel)
+});
+
+client.on('channelUpdate', (oldChannel, newChannel) => {
+    audit.logChannelUpdate(oldChannel, newChannel)
 });
 
 client.on('guildMemberAdd', (member) => {
@@ -34,6 +51,10 @@ client.on('guildBanRemove', (guild, user) => {
 });
 
 client.on('message', (message) => {
+    if (message.member.user === client.user) {
+        return;
+    }
+
     messageHandler(message);
 });
 
