@@ -6,6 +6,9 @@ You should add a file in this config directory named `auth.js` with the followin
 
 ```js
 module.exports = {
-    token: 'YOUR BOT TOKEN HERE'
+    token: 'YOUR BOT TOKEN HERE',
+    sheets: { /* The google sheets authentication object from the directions. */}
 };
 ```
+
+[Google Sheets authentication directions](https://github.com/theoephraim/node-google-spreadsheet#service-account-recommended-method)

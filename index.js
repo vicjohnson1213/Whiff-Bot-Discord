@@ -17,6 +17,7 @@ sheetsManager.init()
 client.on('ready', () => {
     const guildIds = client.guilds.map((guild) => guild.id);
     settingsManager.loadAll(guildIds);
+    messageHandler.initResponses();
     client.user.setPresence({ game: { name: config.game }});
 });
 
@@ -61,5 +62,5 @@ client.on('message', (message) => {
         return;
     }
 
-    messageHandler(message);
+    messageHandler.handleMessages(message);
 });

@@ -2,40 +2,6 @@
 
 Just a little bot that brings some useful utilities to Discord.
 
-## Commands
+## Rewrite
 
-*Notes:*
-
-- All commands are prefixed with an exclamation point (e.g. `!command`).
-- Any options or arguments surrounded by `<...>` are required, while any surrounded by `[...]` are optional.
-
-### `groups <size> [channel]`
-
-Randomly splits all users in a voice channel into groups of a specified size.
-
-**Options:**
-
-| Option | Default | Description |
-| ------ | ------- | ----------- |
-| size   | **required** | The size of the groups you want to form. |
-| channel | *General* | The voice channel to read users from. |
-
-### `roll [sides]`
-
-Rolls an *n* sided die
-
-**Options:**
-
-| Option | Default | Description |
-| ------ | ------- | ----------- |
-| sides | *100* | The number of sides on the die. |
-
-### `straws [channel]`
-
-Draws straws for each user in a voice channel.
-
-**Options:**
-
-| Option | Default | Description |
-| ------ | ------- | ----------- |
-| channel | *General* | The voice channel to read users from. |
+This bot is in the middle of a significant rewrite, so it's changing faster than the docs can keep up. Stay tuned.
