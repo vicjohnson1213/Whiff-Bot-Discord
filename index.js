@@ -5,8 +5,14 @@ const config = require('./config/config');
 const settingsManager = require('./lib/settings-manager');
 const audit = require('./lib/audit');
 const messageHandler = require('./lib/message-handler');
+const sheetsManager = require('./lib/google-sheets-manager');
 
 const client = new Discord.Client();
+
+sheetsManager.init()
+    .then(() => {
+        client.login(auth.token);
+    });
 
 client.on('ready', () => {
     const guildIds = client.guilds.map((guild) => guild.id);
@@ -57,5 +63,3 @@ client.on('message', (message) => {
 
     messageHandler(message);
 });
-
-client.login(auth.token);
