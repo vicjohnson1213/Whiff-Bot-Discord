@@ -2,25 +2,14 @@ const Discord = require('discord.js');
 
 const auth = require('./config/auth');
 const config = require('./config/config');
-const settingsManager = require('./lib/settings-manager');
 const audit = require('./lib/audit');
 const messageHandler = require('./lib/message-handler');
-const sheetsManager = require('./lib/google-sheets-manager');
 
 const client = new Discord.Client();
 
-let noAFKUsers;
-
-sheetsManager.init()
-    .then(() => {
-        client.login(auth.token);
-        return sheetsManager.getNoAFKUsers()
-    }).then(users => noAFKUsers = users);
+client.login(auth.token);
 
 client.on('ready', () => {
-    const guildIds = client.guilds.map((guild) => guild.id);
-    settingsManager.loadAll(guildIds);
-    messageHandler.initResponses();
     client.user.setPresence({ game: { name: config.game }});
 });
 
@@ -66,15 +55,4 @@ client.on('message', (message) => {
     }
 
     messageHandler.handleMessages(message);
-});
-
-client.on('voiceStateUpdate', (oldMember, newMember) => {
-    const isNoAFKUser = noAFKUsers[newMember.guild.id].includes(newMember.id)
-    if (!noAFKUsers || !isNoAFKUser) {
-        return;
-    };
-
-    if (newMember.voiceChannelID === newMember.guild.afkChannelID) {
-        newMember.setVoiceChannel(oldMember.voiceChannelID);
-    }
 });
