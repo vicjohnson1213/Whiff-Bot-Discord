@@ -2,7 +2,8 @@ module.exports = {
     description: 'Randomly assigns people in a voice channel to different groups.',
     run: function(message, args) {
         const _ = require('lodash');
-        const usage = 'Usage:```~groups <group count>```';
+        const config = require('../../../config/config');
+        const usage = 'Usage:```' + config.prefix + 'groups <group count>```';
 
         if (args.length === 0) {
             message.channel.send(usage);

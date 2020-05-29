@@ -3,6 +3,7 @@ module.exports = {
     run: function(message) {
         const path = require('path');
         const _ = require('lodash');
+        const config = require('../../../config/config');
 
         // Import all commands in this directory, excluding this one.
         const commands = require('require-all')({
@@ -12,7 +13,7 @@ module.exports = {
                     return false;
                 }
 
-                return `!${path.basename(filename, '.js')}`;
+                return `${config.prefix}${path.basename(filename, '.js')}`;
             }
         });
 

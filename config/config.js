@@ -16,5 +16,6 @@ auditChannelNames = {
 module.exports = {
     game: 'Whiffing oh so hard',
     env: process.env.NODE_ENV,
-    auditChannelName: auditChannelNames[getEnv()]
+    auditChannelName: auditChannelNames[getEnv()],
+    prefix: '~'
 };
