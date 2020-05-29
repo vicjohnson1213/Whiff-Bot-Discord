@@ -1,4 +1,4 @@
-const config = require('../config/config');
+const config = require('../../config/config');
 
 function logGuildUpdate(oldGuild, newGuild) {
     if (oldGuild.name === newGuild.name) {

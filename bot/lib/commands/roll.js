@@ -2,7 +2,7 @@ module.exports = {
     description: 'Rolls an n sided die.',
     run: function(message, args) {
         const _ = require('lodash');
-        const usage = 'Usage:```!roll [number of sides] (defaults to 100)```';
+        const usage = 'Usage:```~roll [number of sides] (defaults to 100)```';
         let max = 100;
 
         if (args.length > 0) {

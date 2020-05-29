@@ -3,7 +3,7 @@ module.exports = {
     run: function(message, args) {
         const _ = require('lodash');
 
-        const usage = 'Usage:```!straws [channel]```';
+        const usage = 'Usage:```~straws [channel]```';
 
         const channelName = args.length === 0 ? message.member.voiceChannel.name : args.join(' ');
 
