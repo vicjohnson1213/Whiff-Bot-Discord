@@ -9,4 +9,4 @@ const client = new Discord.Client();
 client.login(auth.token);
 
 bot.configureEvents(client);
-// admin.initializeAdminSite(client);
+admin.initializeAdminSite(client);

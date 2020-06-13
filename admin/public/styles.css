@@ -2,4 +2,44 @@ html,
 body {
     box-sizing: border-box;
     font-family: Arial, Helvetica, sans-serif;
+    height: 100%;
+    margin: 0;
+}
+
+body {
+    display: flex;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    margin: 0;
+}
+
+#guild-pane {
+    width: 300px;
+    height: 100%;
+    background-color: red;
+}
+
+.guild-pane-title {
+    padding: 16px 24px;
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.guild-button {
+    border: none;
+    padding: 16px 24px;
+    width: 100%;
+    cursor: pointer;
+    text-align: left;
+    outline: none;
+}
+
+#guild-info-pane {
+    flex-grow: 1;
+}
+
+#guild-name {
+    padding: 24px 16px;
+    border-bottom: 1px solid blue;
 }
