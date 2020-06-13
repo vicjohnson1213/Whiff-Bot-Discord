@@ -8,5 +8,5 @@ const client = new Discord.Client();
 
 client.login(auth.token);
 
-bot.configureEvents(client);
-admin.initializeAdminSite(client);
+bot.init(client);
+admin.init(client);

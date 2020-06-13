@@ -1,22 +1,25 @@
-const config = require('../../../config/config');
+const _ = require('lodash');
+const settings = require('../../../settings/settings');
+const utils = require('../../utils');
+
 const numberEmojis = [
-    { str: ':zero:', unicode: '0️⃣' },
-    { str: ':one:', unicode: '1️⃣' },
-    { str: ':two:', unicode: '2️⃣' },
-    { str: ':three:', unicode: '3️⃣' },
-    { str: ':four:', unicode: '4️⃣' },
-    { str: ':five:', unicode: '5️⃣' },
-    { str: ':six:', unicode: '6️⃣' },
-    { str: ':seven:', unicode: '7️⃣' },
-    { str: ':eight:', unicode: '8️⃣' },
-    { str: ':nine:', unicode: '9️⃣' }
+    { reactionName: ':zero:', reaction: '0️⃣' },
+    { reactionName: ':one:', reaction: '1️⃣' },
+    { reactionName: ':two:', reaction: '2️⃣' },
+    { reactionName: ':three:', reaction: '3️⃣' },
+    { reactionName: ':four:', reaction: '4️⃣' },
+    { reactionName: ':five:', reaction: '5️⃣' },
+    { reactionName: ':six:', reaction: '6️⃣' },
+    { reactionName: ':seven:', reaction: '7️⃣' },
+    { reactionName: ':eight:', reaction: '8️⃣' },
+    { reactionName: ':nine:', reaction: '9️⃣' }
 ];
 
 module.exports = {
     description: 'Creates a new poll',
     run: function(message, args, fullArgs) {
-        const _ = require('lodash');
-        const usage = 'Usage:```~poll "Question" [option 1|option 2|option 3]```';
+        const guildSettings = settings.get(message.guild.id);
+        const usage = 'Usage:```' + guildSettings.prefix + 'poll "Question" [option 1|option 2|option 3]```';
 
         const argsRe = /"([^"]+)"\s+\[([^\]]+)\]/;
 
@@ -31,21 +34,12 @@ module.exports = {
 
         let poll = `**${question}**\n`;
         options.forEach((opt, idx) => {
-            poll += numberEmojis[idx].str + ` - ${opt}\n`;
+            poll += numberEmojis[idx].reactionName + ` - ${opt}\n`;
         });
 
         message.channel.send(poll)
             .then(sent => {
-                return addInitialReactions(sent, options.length, 0);
+                return utils.addReactions(sent, numberEmojis.slice(0, options.length));
             });
-
-        function addInitialReactions(msg, num, current = 0) {
-            if (current == num) {
-                return Promise.resolve();
-            }
-
-            return msg.react(numberEmojis[current].unicode)
-                .then(() => addInitialReactions(msg, num, current + 1));
-        }
     }
 };

@@ -1,6 +1,7 @@
 # Custom
 auth.js
 start
+settings/*.json
 
 # Logs
 logs

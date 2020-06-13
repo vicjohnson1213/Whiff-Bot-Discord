@@ -1,9 +1,11 @@
+const _ = require('lodash');
+const settings = require('../../../settings/settings');
+
 module.exports = {
     description: 'Draws straws for all users in a voice channel.',
     run: function(message, args) {
-        const _ = require('lodash');
-        const config = require('../../../config/config');
-        const usage = 'Usage:```' + config.prefix + 'straws [channel]```';
+        const guildSettings = settings.get(message.guild.id);
+        const usage = 'Usage:```' + guildSettings.prefix + 'straws [channel]```';
 
         const channelName = args.length === 0 ? message.member.voiceChannel.name : args.join(' ');
 

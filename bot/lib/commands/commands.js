@@ -1,9 +1,11 @@
+const path = require('path');
+const _ = require('lodash');
+const settings = require('../../../settings/settings');
+
 module.exports = {
     description: 'Displays a list of all available commands.',
     run: function(message) {
-        const path = require('path');
-        const _ = require('lodash');
-        const config = require('../../../config/config');
+        const guildSettings = settings.get(message.guild.id);
 
         // Import all commands in this directory, excluding this one.
         const commands = require('require-all')({
@@ -13,7 +15,7 @@ module.exports = {
                     return false;
                 }
 
-                return `${config.prefix}${path.basename(filename, '.js')}`;
+                return `${guildSettings.prefix}${path.basename(filename, '.js')}`;
             }
         });
 

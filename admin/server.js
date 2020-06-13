@@ -4,7 +4,7 @@ const express = require('express');
 const app = express();
 const port = 6069;
 
-module.exports.initializeAdminSite = function initializeAdminSite(client) {
+module.exports.init = function init(client) {
     app.get('/guild', getGuilds(client));
     app.get('/guild/:guildId', getGuildInfo(client));
 
