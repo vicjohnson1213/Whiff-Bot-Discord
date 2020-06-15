@@ -2,7 +2,7 @@ const fs = require('fs');
 const path = require('path');
 
 const template = {
-    prefix: '~',
+    prefix: '-',
     auditChannel: 'audit-log'
 };
 
@@ -25,6 +25,28 @@ module.exports.saveRoleAssigmentMessage = function(guildId, message) {
     settings[guildId].roleAssigner.messageId = message.id;
     saveGuildSettings(guildId);
     refreshGuildSettings(guildId);
+}
+
+module.exports.addAssignableRole = function(guildId, reaction, roleId) {
+    settings[guildId].roleAssigner.roles.push({
+        reaction: reaction,
+        roleId: roleId
+    });
+
+    saveGuildSettings(guildId);
+    refreshGuildSettings(guildId);
+}
+
+module.exports.removeAssignableRole = function(guildId, roleId) {
+    const assignerSettings = settings[guildId].roleAssigner;
+    const indexToRemove = assignerSettings.roles.findIndex(r => r.roleId === roleId);
+
+    const removed = settings[guildId].roleAssigner.roles.splice(indexToRemove, 1);
+
+    saveGuildSettings(guildId);
+    refreshGuildSettings(guildId);
+
+    return removed[0];
 }
 
 function loadGuildSettings(guildId) {
