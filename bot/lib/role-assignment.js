@@ -5,6 +5,7 @@ module.exports.configureRoleAssignment = function configureRoleAssignment(client
     const guildIds = client.guilds.map(g => g.id);
     const guildSettings = settings.get(guildIds);
     for (let guildId in guildSettings) {
+
         const assignerSettings = guildSettings[guildId].roleAssigner;
 
         if (!assignerSettings) {
@@ -19,14 +20,20 @@ module.exports.configureRoleAssignment = function configureRoleAssignment(client
         }
 
         initReactionWatcher(client, assignerChannel, assignerSettings);
-        initCommands(client, assignerChannel, assignerSettings);
     }
+
+    initCommands(client);
 }
 
-function initCommands(client, assignerChannel, assignerSettings) {
+function initCommands(client) {
     client.on('message', (message) => {
         const guildSettings = settings.get(message.guild.id);
-        if (!guildSettings.roleAssigner || message.channel.id !== guildSettings.roleAssigner.channel) {
+        const assignerSettings = guildSettings.roleAssigner;
+
+        const isRoleAssignmentChannel = guildSettings.roleAssigner && message.channel.id === guildSettings.roleAssigner.channel;
+        const hasPermission = !!message.member.roles.find(r => r.id === guildSettings.moderatorRoleId);
+
+        if (!isRoleAssignmentChannel || !hasPermission) {
             return;
         }
 
@@ -35,10 +42,10 @@ function initCommands(client, assignerChannel, assignerSettings) {
 
         if (parts[0] === 'add') {
             settings.addAssignableRole(message.guild.id, parts[1], role.id);
-            updateAssignerMessage(assignerChannel, assignerSettings);
+            updateAssignerMessage(message.channel, assignerSettings);
         } else if (parts[0] === 'remove') {
             const removed = settings.removeAssignableRole(message.guild.id, role.id);
-            updateAssignerMessage(assignerChannel, assignerSettings)
+            updateAssignerMessage(message.channel, assignerSettings)
                 .then(newMessage => removeReactions(newMessage, removed.reaction));
         } else {
             return;
@@ -54,13 +61,17 @@ function initReactionWatcher(client, assignerChannel, assignerSettings) {
             client.on('messageReactionAdd', (reaction, user) => {
                 const guildMember = assignerChannel.guild.members.find(m => m.user === user);
                 const roleToAdd = assignerSettings.roles.find(r => r.reaction === reaction.emoji.name);
-                guildMember.addRole(roleToAdd.roleId);
+                if (roleToAdd) {
+                    guildMember.addRole(roleToAdd.roleId);
+                }
             });
 
             client.on('messageReactionRemove', (reaction, user) => {
                 const guildMember = assignerChannel.guild.members.find(m => m.user === user);
                 const roleToRemove = assignerSettings.roles.find(r => r.reaction === reaction.emoji.name);
-                guildMember.removeRole(roleToRemove.roleId);
+                if (roleToRemove) {
+                    guildMember.removeRole(roleToRemove.roleId);
+                }
             });
         });
 }
@@ -71,7 +82,7 @@ function getAssignerMessage(assignerChannel, assignerSettings) {
             .then(msg => {
                 return msg;
             })
-            .catch(() => {
+            .catch((err) => {
                 const content = createAssignerMessage(assignerChannel.guild, assignerSettings);
                 return sendAssignerMessage(assignerChannel, assignerSettings, content);
             });
