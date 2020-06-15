@@ -8,14 +8,14 @@ module.exports.configureRoleAssignment = function configureRoleAssignment(client
         const assignerSettings = guildSettings[guildId].roleAssigner;
 
         if (!assignerSettings) {
-            break;
+            continue;
         }
 
         const guild = client.guilds.find(g => g.id === guildId);
         const assignerChannel = guild.channels.find(channel => channel.id === assignerSettings.channel);
 
         if (!assignerChannel) {
-            break;
+            continue;
         }
 
         initReactionWatcher(client, assignerChannel, assignerSettings);
@@ -82,7 +82,7 @@ function getAssignerMessage(assignerChannel, assignerSettings) {
 }
 
 function createAssignerMessage(guild, assignerSettings) {
-    message = `**${assignerSettings.infoMessage}**`;
+    message = `**Here are the roles you can assign to yourself:**`;
     message += '\n\n';
 
     assignerSettings.roles.forEach(roleToAdd => {
