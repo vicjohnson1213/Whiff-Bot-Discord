@@ -63,6 +63,8 @@ function initReactionWatcher(client, assignerChannel, assignerSettings) {
                 const roleToAdd = assignerSettings.roles.find(r => r.reaction === reaction.emoji.name);
                 if (roleToAdd) {
                     guildMember.addRole(roleToAdd.roleId);
+                } else {
+                    reaction.removeAll();
                 }
             });
 
