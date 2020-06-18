@@ -6,7 +6,7 @@ function logGuildUpdate(oldGuild, newGuild) {
     }
 
     const guildSettings = settings.get(newGuild.id);
-    const channel = newGuild.channels.find(ch => ch.name === guildSettings.auditChannelName);
+    const channel = newGuild.channels.find(ch => ch.name === guildSettings.auditChannel);
     if (channel) {
         channel.send(`\`\`\`GUILD NAME CHANGED: [${oldGuild.name}] => [${newGuild.name}]\`\`\``);
     }
@@ -14,7 +14,7 @@ function logGuildUpdate(oldGuild, newGuild) {
 
 function logMemberJoin(member) {
     const guildSettings = settings.get(member.guild.id);
-    const channel = member.guild.channels.find(ch => ch.name === guildSettings.auditChannelName);
+    const channel = member.guild.channels.find(ch => ch.name === guildSettings.auditChannel);
     if (channel) {
         channel.send(`\`\`\`JOIN: [${member.user.tag}]\`\`\``);
     }
@@ -22,7 +22,7 @@ function logMemberJoin(member) {
 
 function logMemberLeave(member) {
     const guildSettings = settings.get(member.guild.id);
-    const channel = member.guild.channels.find(ch => ch.name === guildSettings.auditChannelName);
+    const channel = member.guild.channels.find(ch => ch.name === guildSettings.auditChannel);
     if (channel) {
         channel.send(`\`\`\`LEAVE: [${member.user.tag}]\`\`\``);
     }
@@ -30,7 +30,7 @@ function logMemberLeave(member) {
 
 function logMemberBan(guild, user) {
     const guildSettings = settings.get(guild.id);
-    const channel = guild.channels.find(ch => ch.name === guildSettings.auditChannelName);
+    const channel = guild.channels.find(ch => ch.name === guildSettings.auditChannel);
     if (channel) {
         channel.send(`\`\`\`BAN: [${user.user.tag}]\`\`\``);
     }
@@ -38,7 +38,7 @@ function logMemberBan(guild, user) {
 
 function logMemberBanLifted(guild, user) {
     const guildSettings = settings.get(guild.id);
-    const channel = guild.channels.find(ch => ch.name === guildSettings.auditChannelName);
+    const channel = guild.channels.find(ch => ch.name === guildSettings.auditChannel);
     if (channel) {
         channel.send(`\`\`\`BAN LIFTED: [${user.user.tag}]\`\`\``);
     }
@@ -50,7 +50,7 @@ function logMemberNameChange(oldMember, newMember) {
         return;
     }
 
-    const channel = newMember.guild.channels.find(ch => ch.name === guildSettings.auditChannelName);
+    const channel = newMember.guild.channels.find(ch => ch.name === guildSettings.auditChannel);
     if (channel) {
         channel.send(`\`\`\`NAME CHANGE: [${oldMember.user.tag}] => [${newMember.displayName}]\`\`\``);
     }
@@ -58,7 +58,7 @@ function logMemberNameChange(oldMember, newMember) {
 
 function logChannelCreate(channel) {
     const guildSettings = settings.get(channel.guild.id);
-    const auditChannel = channel.guild.channels.find(ch => ch.name === guildSettings.auditChannelName);
+    const auditChannel = channel.guild.channels.find(ch => ch.name === guildSettings.auditChannel);
     if (auditChannel) {
         auditChannel.send(`\`\`\`CHANNEL CREATED: [${channel.name}]\`\`\``);
     }
@@ -66,7 +66,7 @@ function logChannelCreate(channel) {
 
 function logChannelDelete(channel) {
     const guildSettings = settings.get(channel.guild.id);
-    const auditChannel = channel.guild.channels.find(ch => ch.name === guildSettings.auditChannelName);
+    const auditChannel = channel.guild.channels.find(ch => ch.name === guildSettings.auditChannel);
     if (auditChannel) {
         auditChannel.send(`\`\`\`CHANNEL DELETED: [${channel.name}]\`\`\``);
     }
@@ -78,7 +78,7 @@ function logChannelUpdate(oldChannel, newChannel) {
     }
 
     const guildSettings = settings.get(newChannel.guild.id);
-    const auditChannel = newChannel.guild.channels.find(ch => ch.name === guildSettings.auditChannelName);
+    const auditChannel = newChannel.guild.channels.find(ch => ch.name === guildSettings.auditChannel);
     if (auditChannel) {
         auditChannel.send(`\`\`\`CHANNEL NAME CHANGED: [${oldChannel.name}] => [${newChannel.name}]\`\`\``);
     }
