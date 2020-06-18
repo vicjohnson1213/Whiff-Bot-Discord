@@ -59,6 +59,10 @@ function initReactionWatcher(client, assignerChannel, assignerSettings) {
     getAssignerMessage(assignerChannel, assignerSettings)
         .then(assignerMessage => {
             client.on('messageReactionAdd', (reaction, user) => {
+                if (reaction.message !== assignerMessage) {
+                    return;
+                }
+
                 const guildMember = assignerChannel.guild.members.find(m => m.user === user);
                 const roleToAdd = assignerSettings.roles.find(r => r.reaction === reaction.emoji.name);
                 if (roleToAdd) {
@@ -69,6 +73,10 @@ function initReactionWatcher(client, assignerChannel, assignerSettings) {
             });
 
             client.on('messageReactionRemove', (reaction, user) => {
+                if (reaction.message !== assignerMessage) {
+                    return;
+                }
+
                 const guildMember = assignerChannel.guild.members.find(m => m.user === user);
                 const roleToRemove = assignerSettings.roles.find(r => r.reaction === reaction.emoji.name);
                 if (roleToRemove) {

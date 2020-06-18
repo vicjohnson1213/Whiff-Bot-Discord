@@ -16,5 +16,8 @@
   },
   "devDependencies": {},
   "author": "Victor Johnson <vicjohnson1213@gmail.com>",
-  "license": "ISC"
+  "license": "ISC",
+  "nodemonConfig": {
+    "ignore": ["settings/*.json"]
+  }
 }

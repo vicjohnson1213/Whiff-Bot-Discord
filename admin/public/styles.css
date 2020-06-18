@@ -14,13 +14,13 @@ h1, h2, h3, h4, h5, h6 {
     margin: 0;
 }
 
-#guild-pane {
+#guild-list {
     width: 300px;
     height: 100%;
     background-color: red;
 }
 
-.guild-pane-title {
+#client-name {
     padding: 16px 24px;
     font-weight: bold;
     font-size: 16px;
@@ -35,11 +35,13 @@ h1, h2, h3, h4, h5, h6 {
     outline: none;
 }
 
-#guild-info-pane {
+#guild-info {
     flex-grow: 1;
 }
 
 #guild-name {
-    padding: 24px 16px;
+    padding: 16px 24px;
     border-bottom: 1px solid blue;
+    font-weight: bold;
+    font-size: 16px;
 }

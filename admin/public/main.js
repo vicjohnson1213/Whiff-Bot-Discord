@@ -4,9 +4,10 @@ $(function() {
 
 function createServerList() {
     return new Promise((resolve, reject) => {
-        $.get('/guild', (res) => {
+        $.get('/client', (res) => {
+            $('#client-name').text(res.username);
             let joinedGuilds = $('#joined-guilds');
-            res.forEach(guild => {
+            res.guilds.forEach(guild => {
                 let guildButton = $('<button>');
                 guildButton.addClass('guild-button');
                 guildButton.text(guild.name);

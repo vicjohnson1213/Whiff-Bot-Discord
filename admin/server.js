@@ -5,16 +5,17 @@ const app = express();
 const port = 6069;
 
 module.exports.init = function init(client) {
-    app.get('/guild', getGuilds(client));
+    app.get('/client', getClient(client));
     app.get('/guild/:guildId', getGuildInfo(client));
 
     app.use(express.static(path.join(__dirname, 'public')));
     app.listen(port, () => {});
 }
 
-function getGuilds(client) {
+
+function getClient(client) {
     return (req, res) => {
-        res.json(client.guilds.map(mapGuild));
+        res.json(mapClient(client));
     };
 }
 
@@ -26,6 +27,14 @@ function getGuildInfo(client) {
     };
 }
 
+
+function mapClient(client) {
+    return {
+        avatar: client.user.avatarURL,
+        username: client.user.username,
+        guilds: client.guilds.map(mapGuild)
+    }
+}
 
 function mapGuild(guild) {
     return {
