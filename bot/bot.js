@@ -2,10 +2,14 @@ const config = require('../config/config');
 const audit = require('./lib/audit');
 const messageHandler = require('./lib/message-handler');
 const configureRoleAssignment = require('./lib/role-assignment').configureRoleAssignment;
+const configureAutoRoles = require('./lib/auto-roles').configureAutoRoles;
 
 module.exports.init = function(client) {
     configureEvents(client)
-        .then(() => configureRoleAssignment(client));
+        .then(() => {
+            configureRoleAssignment(client);
+            configureAutoRoles(client);
+        });
 }
 
 function configureEvents(client) {

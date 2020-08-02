@@ -67,7 +67,7 @@ function refreshGuildSettings(guildId) {
     settings[guildId] = require(`./${guildId}.json`);
 }
 
-function saveGuildSettings(guildId) {
+module.exports.saveGuildSettings = function saveGuildSettings(guildId) {
     const fileName = `${guildId}.json`;
     const content = JSON.stringify(settings[guildId], ' ', 4);
     fs.writeFileSync(path.join(__dirname, fileName), content);
