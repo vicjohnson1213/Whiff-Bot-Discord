@@ -197,25 +197,15 @@ namespace WhiffBot.RoleAssignment
             var guild = GuildRepo.Get(discordGuild.Id);
             var assignerChannel = discordGuild.GetChannel(guild.Settings.RoleAssignment.ChannelId.Value) as SocketTextChannel;
 
-            // Because of the oddities around how the library types cached/uncached messages, I've decided to handle the two
-            // possibilities separately.
-            var cachedMessage = assignerChannel.GetCachedMessage(guild.Settings.RoleAssignment.MessageId.Value) as SocketUserMessage;
-            var assignerMessage = await assignerChannel.GetMessageAsync(guild.Settings.RoleAssignment.MessageId.Value) as RestUserMessage;
+            IUserMessage assignerMessage = assignerChannel.GetCachedMessage(guild.Settings.RoleAssignment.MessageId.Value) as SocketUserMessage;
+
+            if (assignerMessage == null)
+                assignerMessage = await assignerChannel.GetMessageAsync(guild.Settings.RoleAssignment.MessageId.Value) as RestUserMessage;
 
             var newContent = CreateAssignerMessage(discordGuild, guild.Settings.RoleAssignment);
+            await assignerMessage.ModifyAsync(m => m.Content = newContent);
 
-            if (cachedMessage != null)
-            {
-                await cachedMessage.ModifyAsync(m => m.Content = newContent);
-                return cachedMessage;
-            }
-            else if (assignerMessage != null)
-            {
-                await assignerMessage.ModifyAsync(m => m.Content = newContent);
-                return assignerMessage;
-            }
-
-            return null;
+            return assignerMessage;
         }
 
         /// <summary>
