@@ -9,7 +9,7 @@ using WhiffBot.Models;
 namespace WhiffBot.RoleAssignment
 {
     /// <summary>
-    /// A bot module responsible for the management of a message that users can react to in order to assign themselves
+    /// A module responsible for the management of a message that users can react to in order to assign themselves
     /// roles. Because Discord doesn't have very specific permissions around assigning roles, we must work around them.
     /// </summary>
     public class RoleAssignment
