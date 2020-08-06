@@ -5,9 +5,6 @@ using WhiffBot.Data;
 
 namespace WhiffBot.Commands
 {
-    /// <summary>
-    /// A command to roll an <n> sided die.
-    /// </summary>
     class Roll : ICommand
     {
         private IGuildRepository GuildRepo { get; set; }

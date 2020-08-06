@@ -55,6 +55,18 @@ namespace WhiffBot.Commands
         {
             var roll = new Roll(GuildRepo);
             Commands.Add(roll.Name, roll);
+
+            var groups = new Groups(GuildRepo);
+            Commands.Add(groups.Name, groups);
+
+            var profile = new Profile();
+            Commands.Add(profile.Name, profile);
+
+            var straws = new Straws();
+            Commands.Add(straws.Name, straws);
+
+            var commands = new Commands(GuildRepo, Commands.Values);
+            Commands.Add(commands.Name, commands);
         }
     }
 }

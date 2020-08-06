@@ -108,7 +108,7 @@ namespace WhiffBot.RoleAssignment
             if (parts[0] == $"{guild.Settings.Prefix}initRoleAssignment")
             {
                 await InitForGuild(channel, guild);
-                _ = channel.DeleteMessageAsync(message);
+                await channel.DeleteMessageAsync(message);
                 return;
             }
 
@@ -125,7 +125,7 @@ namespace WhiffBot.RoleAssignment
                 await RemoveRole(channel.Guild, guild, message.MentionedRoles.FirstOrDefault());
             }
 
-            _ = channel.DeleteMessageAsync(message);
+            await channel.DeleteMessageAsync(message);
 
         }
 
@@ -151,7 +151,7 @@ namespace WhiffBot.RoleAssignment
 
             GuildRepo.AddAssignableRole(discordGuild.Id, reaction, role.Id);
             var message = await UpdateAssignerMessage(discordGuild);
-            _ = message.AddReactionAsync(new Emoji(reaction));
+            await message.AddReactionAsync(new Emoji(reaction));
         }
 
         /// <summary>
@@ -169,7 +169,7 @@ namespace WhiffBot.RoleAssignment
             GuildRepo.RemoveAssignableRole(discordGuild.Id, role.Id);
             var message = await UpdateAssignerMessage(discordGuild);
             var emojiToRemove = guild.Settings.RoleAssignment.Roles.Find(r => r.RoleId == role.Id);
-            _ = message.RemoveAllReactionsForEmoteAsync(new Emoji(emojiToRemove.Reaction));
+            await message.RemoveAllReactionsForEmoteAsync(new Emoji(emojiToRemove.Reaction));
         }
 
         /// <summary>
