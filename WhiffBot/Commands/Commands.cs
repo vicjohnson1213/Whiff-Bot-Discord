@@ -20,6 +20,12 @@ namespace WhiffBot.Commands
             GuildRepo = guildRepo;
         }
 
+        /// <summary>
+        /// Sends all available commands to the user.
+        /// </summary>
+        /// <param name="message">The incoming message</param>
+        /// <param name="maxStr">The number of sides on the die</param>
+        /// <returns></returns>
         public async Task Run(SocketMessage message, string args)
         {
             var prefix = "";
