@@ -11,6 +11,7 @@ namespace WhiffBot
 {
     class WhiffBot
     {
+        private IGuildRepository GuildRepo { get; set; }
         private DiscordSocketClient Client { get; set; }
 
         static void Main(string[] args) => new WhiffBot().MainAsync().GetAwaiter().GetResult();
@@ -21,24 +22,48 @@ namespace WhiffBot
 
             var discordConfig = new DiscordSocketConfig { MessageCacheSize = 10 };
             Client = new DiscordSocketClient(discordConfig);
+            GuildRepo = new GuildRepository(config);
 
             Client.Log += Log;
 
             await Client.LoginAsync(TokenType.Bot, config.DiscordClientId);
             await Client.StartAsync();
-
-            InitModules(config);
+            Client.Ready += Init();
+            Client.JoinedGuild += InitGuild;
 
             await Task.Delay(-1);
         }
 
-
-        private void InitModules(Conf.Configuration config)
+        private Func<Task> Init()
         {
-            var guildRepo = new GuildRepository(config);
-            new Audit(Client, guildRepo);
-            new RA.RoleAssignment(Client, guildRepo);
-            new CommandHandler(Client, guildRepo);
+            return () =>
+            {
+                InitGuilds();
+                InitModules();
+                return Task.CompletedTask;
+            };
+        }
+
+        private Task InitGuilds()
+        {
+            foreach (var discordGuild in Client.Guilds)
+                InitGuild(discordGuild);
+            return Task.CompletedTask;
+        }
+
+        private Task InitGuild(SocketGuild discordGuild)
+        {
+            var guild = GuildRepo.Get(discordGuild.Id);
+            if (guild == null)
+                GuildRepo.InitGuild(discordGuild);
+            return Task.CompletedTask;
+        }
+
+        private void InitModules()
+        {
+            new Audit(Client, GuildRepo);
+            new RA.RoleAssignment(Client, GuildRepo);
+            new CommandHandler(Client, GuildRepo);
         }
 
         private Task Log(LogMessage msg)

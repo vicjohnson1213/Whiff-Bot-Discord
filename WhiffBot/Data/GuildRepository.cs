@@ -1,4 +1,5 @@
-﻿using Npgsql;
+﻿using Discord.WebSocket;
+using Npgsql;
 using System.Collections.Generic;
 using WhiffBot.Configuration;
 using WhiffBot.Models;
@@ -8,6 +9,9 @@ namespace WhiffBot.Data
     public class GuildRepository : IGuildRepository
     {
         private string ConnectionString { get; set; }
+
+        private readonly string INIT_GUILD = "INSERT INTO guild VALUES (@guildId, @guildName)";
+        private readonly string INIT_GUILD_SETTINGS = "INSERT INTO guild_settings VALUES (@guildId)";
 
         private readonly string GET_GUILD = "SELECT * FROM guild g WHERE g.id = @id LIMIT 1";
         private readonly string GET_GUILD_SETTINGS = "SELECT * FROM guild_settings gs WHERE gs.guild_id = @id LIMIT 1";
@@ -21,6 +25,41 @@ namespace WhiffBot.Data
         public GuildRepository(IConfiguration config)
         {
             ConnectionString = config.ConnectionString;
+        }
+
+        public void InitGuild(SocketGuild guild)
+        {
+            using (var conn = new NpgsqlConnection(ConnectionString))
+            {
+                conn.Open();
+
+                using (var cmd = new NpgsqlCommand(INIT_GUILD, conn))
+                {
+                    cmd.Parameters.AddWithValue("guildId", (long)guild.Id);
+                    cmd.Parameters.AddWithValue("guildname", guild.Name);
+                    var reader = cmd.ExecuteNonQuery();
+                }
+
+                conn.Close();
+            }
+
+            InitGuildSettings(guild);
+        }
+
+        private void InitGuildSettings(SocketGuild guild)
+        {
+            using (var conn = new NpgsqlConnection(ConnectionString))
+            {
+                conn.Open();
+
+                using (var cmd = new NpgsqlCommand(INIT_GUILD_SETTINGS, conn))
+                {
+                    cmd.Parameters.AddWithValue("guildId", (long)guild.Id);
+                    var reader = cmd.ExecuteReader();
+                }
+
+                conn.Close();
+            }
         }
 
         /// <summary>
@@ -77,12 +116,11 @@ namespace WhiffBot.Data
                         return new GuildSettings
                         {
                             Prefix = reader.GetChar(1),
-                            ModeratorRoleId = (ulong)reader.GetInt64(2),
-                            AuditChannelId = (ulong)reader.GetInt64(3),
+                            AuditChannelId = (ulong)reader.GetInt64(2),
                             RoleAssignment = new RoleAssignmentSettings
                             {
-                                ChannelId = (ulong?)reader.GetFieldValue<long?>(4),
-                                MessageId = (ulong?)reader.GetFieldValue<long?>(5),
+                                ChannelId = (ulong?)reader.GetFieldValue<long?>(3),
+                                MessageId = (ulong?)reader.GetFieldValue<long?>(4),
                                 Roles = GetRoleAssignmentRoles(guildId)
                             }
                         };
