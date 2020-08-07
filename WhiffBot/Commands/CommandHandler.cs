@@ -31,6 +31,10 @@ namespace WhiffBot.Commands
         /// <returns></returns>
         public async Task OnMessage(SocketMessage message)
         {
+            // Only respond to human beings.
+            if (message.Author.IsBot || !(message.Author as SocketGuildUser).GuildPermissions.Administrator)
+                return;
+
             var guildChannel = message.Channel as SocketGuildChannel;
 
             if (guildChannel is null)

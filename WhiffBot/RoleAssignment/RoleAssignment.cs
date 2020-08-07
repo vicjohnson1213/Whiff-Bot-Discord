@@ -86,7 +86,7 @@ namespace WhiffBot.RoleAssignment
         }
 
         /// <summary>
-        /// The handling method for when a managing messages in the assignment channel. Guild administrators
+        /// The handling method for when a managing the assignment channel. Guild administrators
         /// can initialize the assignment, add assignable roles, or remove assignable roles.
         /// </summary>
         /// <param name="message">The message sent</param>

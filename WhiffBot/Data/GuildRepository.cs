@@ -18,6 +18,7 @@ namespace WhiffBot.Data
         private readonly string GET_GUILD_ROLE_ASSIGNMENT_ROLES = "SELECT * FROM guild_role_assignment gra WHERE gra.guild_id = @id";
 
         private readonly string SAVE_GUILD_ROLE_ASSIGNMENT = "UPDATE guild_settings gs SET role_assignment_channel_id = @channelId, role_assignment_message_id = @messageId where guild_id = @guildId";
+        private readonly string SET_AUDIT_LOG_CHANNEL = "UPDATE guild_settings SET audit_log_channel_id = @channelId WHERE guild_id = @guildId";
         private readonly string ADD_ASSIGNABLE_ROLE = "INSERT INTO guild_role_assignment VALUES (@guildId, @reaction, @roleId)";
 
         private readonly string REMOVE_ASSIGNABLE_ROLE = "DELETE FROM guild_role_assignment WHERE guild_id = @guildId AND role_id = @roleId";
@@ -149,6 +150,22 @@ namespace WhiffBot.Data
                     cmd.Parameters.AddWithValue("guildId", (long)guildId);
                     cmd.Parameters.AddWithValue("channelId", (long)channelId);
                     cmd.Parameters.AddWithValue("messageId", (long)messageId);
+                    cmd.ExecuteNonQuery();
+                }
+
+                conn.Close();
+            }
+        }
+
+        public void SetAuditLogChannel(ulong guildId, ulong channelId)
+        {
+            using (var conn = new NpgsqlConnection(ConnectionString))
+            {
+                conn.Open();
+                using (var cmd = new NpgsqlCommand(SET_AUDIT_LOG_CHANNEL, conn))
+                {
+                    cmd.Parameters.AddWithValue("guildId", (long)guildId);
+                    cmd.Parameters.AddWithValue("channelId", (long)channelId);
                     cmd.ExecuteNonQuery();
                 }
 

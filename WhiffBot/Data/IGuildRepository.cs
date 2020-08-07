@@ -9,6 +9,7 @@ namespace WhiffBot.Data
         public Guild Get(ulong guildId);
         public GuildSettings GetSettings(ulong guildId);
         public void SaveRoleAssignmentSettings(ulong guildId, ulong channelId, ulong messageId);
+        public void SetAuditLogChannel(ulong guildId, ulong channelId);
         public void AddAssignableRole(ulong guildId, string reaction, ulong roleId);
         public void RemoveAssignableRole(ulong guildId, ulong roleId);
     }

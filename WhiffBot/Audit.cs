@@ -1,5 +1,6 @@
 ﻿using Discord.WebSocket;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using WhiffBot.Data;
 
@@ -24,6 +25,38 @@ namespace WhiffBot
             Client.ChannelCreated += CreateChannelLogger("CREATED");
             Client.ChannelDestroyed += CreateChannelLogger("DELETED");
             Client.ChannelUpdated += LogChannelChanged;
+
+            Client.MessageReceived += OnMessage;
+        }
+
+        /// <summary>
+        /// The handler for any audit related commands.
+        /// </summary>
+        /// <param name="message">The message sent</param>
+        /// <returns></returns>
+        private Task OnMessage(SocketMessage message)
+        {
+            // Only human administrators can manage the role assignment channel.
+            if (message.Author.IsBot || !(message.Author as SocketGuildUser).GuildPermissions.Administrator)
+                return Task.CompletedTask;
+
+            var channel = message.Channel as SocketTextChannel;
+            if (channel == null)
+                return Task.CompletedTask;
+
+            var guild = GuildRepo.Get(channel.Guild.Id);
+
+            var parts = message.Content.Split();
+            if (parts[0] == $"{guild.Settings.Prefix}setAuditChannel")
+            {
+                var auditChannel = message.MentionedChannels.FirstOrDefault();
+                if (auditChannel == null)
+                    return Task.CompletedTask;
+
+                GuildRepo.SetAuditLogChannel(guild.Id, auditChannel.Id);
+            }
+
+            return Task.CompletedTask;
         }
 
         /// <summary>
