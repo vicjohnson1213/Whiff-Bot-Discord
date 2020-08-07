@@ -116,7 +116,7 @@ namespace WhiffBot.Data
                         return new GuildSettings
                         {
                             Prefix = reader.GetChar(1),
-                            AuditChannelId = (ulong)reader.GetInt64(2),
+                            AuditChannelId = (ulong?)reader.GetFieldValue<long?>(2),
                             RoleAssignment = new RoleAssignmentSettings
                             {
                                 ChannelId = (ulong?)reader.GetFieldValue<long?>(3),
