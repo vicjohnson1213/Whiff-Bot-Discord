@@ -1,3 +1,5 @@
+deploy.sh
+
 *.swp
 *.*~
 project.lock.json
