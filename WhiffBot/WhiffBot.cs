@@ -29,9 +29,16 @@ namespace WhiffBot
             await Client.LoginAsync(TokenType.Bot, config.DiscordClientId);
             await Client.StartAsync();
             Client.Ready += Init();
+            Client.Disconnected += HandleDisconnect;
             Client.JoinedGuild += InitGuild;
 
             await Task.Delay(-1);
+        }
+
+        private async Task HandleDisconnect(Exception e)
+        {
+            await Log(new LogMessage(LogSeverity.Critical, "WhiffBot", "Restarting", e));
+            Environment.Exit(1);
         }
 
         private Func<Task> Init()
@@ -54,8 +61,10 @@ namespace WhiffBot
         private Task InitGuild(SocketGuild discordGuild)
         {
             var guild = GuildRepo.Get(discordGuild.Id);
+
             if (guild == null)
                 GuildRepo.InitGuild(discordGuild);
+
             return Task.CompletedTask;
         }
 

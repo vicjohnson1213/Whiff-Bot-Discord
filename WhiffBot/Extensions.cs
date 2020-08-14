@@ -14,13 +14,19 @@ namespace WhiffBot
         /// </summary>
         /// <param name="message">The message to add reactions to</param>
         /// <param name="reactions">The reactions to add</param>
-        /// <returns></returns>
+        /// <returns>A Task when all reactions have been added.</returns>
         public static async Task AddReactionsAsync(this IMessage message, IEnumerable<IEmote> reactions)
         {
             foreach (var reaction in reactions)
                 await message.AddReactionAsync(reaction);
         }
 
+        /// <summary>
+        /// Shuffles a list of elements.
+        /// </summary>
+        /// <typeparam name="T">The type of the element in the list.</typeparam>
+        /// <param name="list">The list to shuffle</param>
+        /// <returns>The shuffled list</returns>
         public static IList<T> Shuffle<T>(this IList<T> list)
         {
             int n = list.Count;
