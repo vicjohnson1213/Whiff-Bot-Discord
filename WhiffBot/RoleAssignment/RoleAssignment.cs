@@ -47,7 +47,7 @@ namespace WhiffBot.RoleAssignment
             var roleToAdd = guild.Settings.RoleAssignment.Roles.Find(r => r.Reaction == reaction.Emote.Name);
 
             // If a user adds an unknown reaction, just delete it.
-            if (roleToAdd == null && reaction.UserId != Client.CurrentUser.Id)
+            if (roleToAdd == null)
             {
                 var guildMessage = await channel.GetMessageAsync(message.Id);
                 await guildMessage.RemoveReactionAsync(reaction.Emote, user);

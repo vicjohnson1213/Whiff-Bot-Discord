@@ -239,7 +239,7 @@ namespace WhiffBot.Data
                     {
                         roles.Add(new RoleAssignmentRole
                         {
-                            Reaction = reader.GetString(1),
+                            Reaction = reader.GetString(1).Trim(),
                             RoleId = (ulong)reader.GetInt64(2)
                         }); ;
                     }
