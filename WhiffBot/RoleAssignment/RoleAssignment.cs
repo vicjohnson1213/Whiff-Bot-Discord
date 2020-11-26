@@ -25,6 +25,7 @@ namespace WhiffBot.RoleAssignment
             Client.MessageReceived += OnMessage;
             Client.ReactionAdded += OnReactionAdded;
             Client.ReactionRemoved += OnReactionRemoved;
+            Client.RoleDeleted += OnRoleDeleted;
         }
 
         /// <summary>
@@ -86,6 +87,23 @@ namespace WhiffBot.RoleAssignment
         }
 
         /// <summary>
+        /// The handling method for when a role is removed. This should remove the deleted role from the assigner message
+        /// and remove any of the reactions for that role.
+        /// </summary>
+        /// <param name="role"></param>
+        /// <returns></returns>
+        private async Task OnRoleDeleted(SocketRole role)
+        {
+            var guild = GuildRepo.Get(role.Guild.Id);
+            var roleToDelete = guild.Settings.RoleAssignment.Roles.Find(r => r.RoleId == role.Id);
+
+            if (roleToDelete == null)
+                return;
+
+            await RemoveRole(role.Guild, guild, role);
+        }
+
+        /// <summary>
         /// The handling method for when a managing the assignment channel. Guild administrators
         /// can initialize the assignment, add assignable roles, or remove assignable roles.
         /// </summary>
@@ -126,7 +144,6 @@ namespace WhiffBot.RoleAssignment
             }
 
             await channel.DeleteMessageAsync(message);
-
         }
 
         /// <summary>
