@@ -239,6 +239,10 @@ namespace WhiffBot.RoleAssignment
             foreach (var role in settings.Roles)
             {
                 var discordRole = discordGuild.GetRole(role.RoleId);
+
+                if (discordRole == null)
+                    continue;
+
                 message += $"{role.Reaction} -> {discordRole.Mention}\n";
             }
 
