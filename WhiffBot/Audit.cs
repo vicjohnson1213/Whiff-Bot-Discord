@@ -26,6 +26,10 @@ namespace WhiffBot
             Client.ChannelDestroyed += CreateChannelLogger("DELETED");
             Client.ChannelUpdated += LogChannelChanged;
 
+            Client.RoleCreated += CreateRoleLogger("CREATED");
+            Client.RoleDeleted += CreateRoleLogger("DELETED");
+            Client.RoleUpdated += LogRoleChanged;
+
             Client.MessageReceived += OnMessage;
         }
 
@@ -117,11 +121,27 @@ namespace WhiffBot
                     return;
 
                 var auditChannel = editedChannel.Guild.GetTextChannel(guild.Settings.AuditChannelId.Value);
-                if (channel == null)
+                if (auditChannel == null)
                     return;
 
                 
                 await auditChannel.SendMessageAsync($"```CHANNEL {property} [{editedChannel.Name}]```");
+            };
+        }
+
+        private Func<SocketRole, Task> CreateRoleLogger(string property)
+        {
+            return async role =>
+            {
+                var guild = GuildRepo.Get(role.Guild.Id);
+                if (guild.Settings.AuditChannelId == null)
+                    return;
+
+                var auditChannel = role.Guild.GetTextChannel(guild.Settings.AuditChannelId.Value);
+                if (auditChannel == null)
+                    return;
+
+                await auditChannel.SendMessageAsync($"```CHANNEL {property} [{role.Name}]```");
             };
         }
 
@@ -171,6 +191,22 @@ namespace WhiffBot
                 return;
 
             await channel.SendMessageAsync($"```CHANNEL NAME CHANGE: [{oldGuildChannel.Name}] => [{newGuildChannel.Name}]```");
+        }
+
+        private async Task LogRoleChanged(SocketRole oldRole, SocketRole newRole)
+        {
+            if (oldRole.Name == newRole.Name)
+                return;
+
+            var guild = GuildRepo.Get(newRole.Guild.Id);
+            if (guild.Settings.AuditChannelId == null)
+                return;
+
+            var channel = newRole.Guild.GetTextChannel(guild.Settings.AuditChannelId.Value);
+            if (channel == null)
+                return;
+
+            await channel.SendMessageAsync($"```ROLE NAME CHANGE: [{oldRole.Name}] => [{newRole.Name}]");
         }
     }
 }
