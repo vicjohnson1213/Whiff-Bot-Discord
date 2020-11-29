@@ -106,9 +106,9 @@ namespace WhiffBot
         }
 
         /// <summary>
-        /// Creates a generic logger for an event that happens on to a user in a guild.
+        /// Creates a generic logger for an event that happens on to a channel in a guild.
         /// </summary>
-        /// <param name="property">The action that the user experienced</param>
+        /// <param name="property">The action that the channel experienced</param>
         /// <returns>A function that will send a message to the audit log regarding the action taken</returns>
         private Func<SocketChannel, Task> CreateChannelLogger(string property)
         {
@@ -129,6 +129,11 @@ namespace WhiffBot
             };
         }
 
+        /// <summary>
+        /// Creates a generic logger for an event that happens on to a role in a guild.
+        /// </summary>
+        /// <param name="property">The action that the role experienced</param>
+        /// <returns>A function that will send a message to the audit log regarding the action taken</returns>
         private Func<SocketRole, Task> CreateRoleLogger(string property)
         {
             return async role =>
@@ -193,6 +198,11 @@ namespace WhiffBot
             await channel.SendMessageAsync($"```CHANNEL NAME CHANGE: [{oldGuildChannel.Name}] => [{newGuildChannel.Name}]```");
         }
 
+        /// <summary>
+        /// Sends an audit message to the guild's audit channel (if it exists) when a role's name changed.
+        /// <param name="oldRole">The role before the change</param>
+        /// <param name="newRole">The role after the change</param>
+        /// <returns>The task completion</returns>
         private async Task LogRoleChanged(SocketRole oldRole, SocketRole newRole)
         {
             if (oldRole.Name == newRole.Name)
