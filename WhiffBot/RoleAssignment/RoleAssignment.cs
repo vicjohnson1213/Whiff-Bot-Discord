@@ -159,7 +159,6 @@ namespace WhiffBot.RoleAssignment
         {
             if (
                 string.IsNullOrWhiteSpace(reaction) ||
-                reaction.Length > 2 ||
                 role == null ||
                 guild.Settings.RoleAssignment.Roles.Find(r => r.RoleId == role.Id) != null)
             {
