@@ -245,7 +245,7 @@ namespace WhiffBot.RoleAssignment
                 message += $"{role.Reaction} -> {discordRole.Mention}\n";
             }
 
-            message += "\nRemoving your reaction to for any of these roles will also remove that role.";
+            message += "\nRemoving your reaction for any of these roles will also remove that role.";
 
             return message;
         }
