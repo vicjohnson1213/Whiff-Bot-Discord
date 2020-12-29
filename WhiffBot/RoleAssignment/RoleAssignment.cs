@@ -115,7 +115,6 @@ namespace WhiffBot.RoleAssignment
             if (message.Author.IsBot || !(message.Author as SocketGuildUser).GuildPermissions.Administrator)
                 return;
 
-
             var channel = message.Channel as SocketTextChannel;
             if (channel == null)
                 return;
@@ -141,6 +140,11 @@ namespace WhiffBot.RoleAssignment
             else if (parts[0] == $"{guild.Settings.Prefix}remove")
             {
                 await RemoveRole(channel.Guild, guild, message.MentionedRoles.FirstOrDefault());
+            }
+            else if (parts[0] == $"{guild.Settings.Prefix}update")
+            {
+                await UpdateAssignerMessage(channel.Guild);
+                await message.DeleteAsync();
             }
 
             await channel.DeleteMessageAsync(message);
