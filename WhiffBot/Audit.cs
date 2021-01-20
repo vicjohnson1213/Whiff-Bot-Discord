@@ -146,7 +146,7 @@ namespace WhiffBot
                 if (auditChannel == null)
                     return;
 
-                await auditChannel.SendMessageAsync($"```CHANNEL {property} [{role.Name}]```");
+                await auditChannel.SendMessageAsync($"```ROLE {property} [{role.Name}]```");
             };
         }
 
@@ -216,7 +216,7 @@ namespace WhiffBot
             if (channel == null)
                 return;
 
-            await channel.SendMessageAsync($"```ROLE NAME CHANGE: [{oldRole.Name}] => [{newRole.Name}]");
+            await channel.SendMessageAsync($"```ROLE NAME CHANGE: [{oldRole.Name}] => [{newRole.Name}]```");
         }
     }
 }
