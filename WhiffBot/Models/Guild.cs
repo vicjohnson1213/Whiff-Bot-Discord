@@ -9,5 +9,6 @@ namespace WhiffBot.Models
         public ulong Id { get; set; }
         public string Name { get; set; }
         public GuildSettings Settings { get; set; }
+        public Dictionary<string, string> AutoResponses { get; set; }
     }
 }

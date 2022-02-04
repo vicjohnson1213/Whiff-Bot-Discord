@@ -133,15 +133,15 @@ namespace WhiffBot.RoleAssignment
             if (guild.Settings.RoleAssignment.ChannelId != channel.Id)
                 return;
 
-            if (parts[0] == $"{guild.Settings.Prefix}add")
+            if (parts[0] == $"{guild.Settings.Prefix}addRole")
             {
                 await AddNewRole(channel.Guild, guild, parts[1], message.MentionedRoles.FirstOrDefault());
             }
-            else if (parts[0] == $"{guild.Settings.Prefix}remove")
+            else if (parts[0] == $"{guild.Settings.Prefix}removeRole")
             {
                 await RemoveRole(channel.Guild, guild, message.MentionedRoles.FirstOrDefault());
             }
-            else if (parts[0] == $"{guild.Settings.Prefix}update")
+            else if (parts[0] == $"{guild.Settings.Prefix}updateMessage")
             {
                 await UpdateAssignerMessage(channel.Guild);
                 await message.DeleteAsync();

@@ -31,6 +31,7 @@ namespace WhiffBot
             Client.Ready += Init();
             Client.Disconnected += HandleDisconnect;
             Client.JoinedGuild += InitGuild;
+            Client.GuildUpdated += UpdateGuild;
 
             await Task.Delay(-1);
         }
@@ -55,6 +56,7 @@ namespace WhiffBot
         {
             foreach (var discordGuild in Client.Guilds)
                 InitGuild(discordGuild);
+
             return Task.CompletedTask;
         }
 
@@ -64,6 +66,8 @@ namespace WhiffBot
 
             if (guild == null)
                 GuildRepo.InitGuild(discordGuild);
+            else
+                GuildRepo.UpdateGuildName(discordGuild.Id, discordGuild.Name);
 
             return Task.CompletedTask;
         }
@@ -73,6 +77,17 @@ namespace WhiffBot
             new Audit(Client, GuildRepo);
             new RA.RoleAssignment(Client, GuildRepo);
             new CommandHandler(Client, GuildRepo);
+            new AutoResponse(Client, GuildRepo);
+        }
+
+        private Task UpdateGuild(SocketGuild oldGuild, SocketGuild newGuild)
+        {
+            if (oldGuild.Name != newGuild.Name)
+            {
+                GuildRepo.UpdateGuildName(newGuild.Id, newGuild.Name);
+            }
+
+            return Task.CompletedTask;
         }
 
         private Task Log(LogMessage msg)

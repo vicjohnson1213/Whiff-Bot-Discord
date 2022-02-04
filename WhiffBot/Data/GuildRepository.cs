@@ -13,9 +13,15 @@ namespace WhiffBot.Data
         private readonly string INIT_GUILD = "INSERT INTO guild VALUES (@guildId, @guildName)";
         private readonly string INIT_GUILD_SETTINGS = "INSERT INTO guild_settings VALUES (@guildId)";
 
+        private readonly string UPDATE_GUILD_NAME = "UPDATE guild g SET name = @guildName where id = @guildId";
+
         private readonly string GET_GUILD = "SELECT * FROM guild g WHERE g.id = @id LIMIT 1";
         private readonly string GET_GUILD_SETTINGS = "SELECT * FROM guild_settings gs WHERE gs.guild_id = @id LIMIT 1";
         private readonly string GET_GUILD_ROLE_ASSIGNMENT_ROLES = "SELECT * FROM guild_role_assignment gra WHERE gra.guild_id = @id";
+
+        private readonly string GET_GUILD_AUTO_RESPONSES = "SELECT * FROM guild_responses gr WHERE gr.guild_id = @id";
+        private readonly string ADD_AUTO_RESPONSE = "INSERT INTO guild_responses VALUES (@guildId, @message, @response)";
+        private readonly string REMOVE_AUTO_RESPONSE = "DELETE FROM guild_responses WHERE guild_id = @guildId AND message = @message";
 
         private readonly string SAVE_GUILD_ROLE_ASSIGNMENT = "UPDATE guild_settings gs SET role_assignment_channel_id = @channelId, role_assignment_message_id = @messageId where guild_id = @guildId";
         private readonly string SET_AUDIT_LOG_CHANNEL = "UPDATE guild_settings SET audit_log_channel_id = @channelId WHERE guild_id = @guildId";
@@ -47,22 +53,6 @@ namespace WhiffBot.Data
             InitGuildSettings(guild);
         }
 
-        private void InitGuildSettings(SocketGuild guild)
-        {
-            using (var conn = new NpgsqlConnection(ConnectionString))
-            {
-                conn.Open();
-
-                using (var cmd = new NpgsqlCommand(INIT_GUILD_SETTINGS, conn))
-                {
-                    cmd.Parameters.AddWithValue("guildId", (long)guild.Id);
-                    var reader = cmd.ExecuteReader();
-                }
-
-                conn.Close();
-            }
-        }
-
         /// <summary>
         /// Gets all available data for a guild.
         /// </summary>
@@ -70,6 +60,8 @@ namespace WhiffBot.Data
         /// <returns>The guild information for this guild</returns>
         public Guild Get(ulong guildId)
         {
+            Guild guild = null;
+
             using (var conn = new NpgsqlConnection(ConnectionString))
             {
                 conn.Open();
@@ -79,13 +71,15 @@ namespace WhiffBot.Data
                     cmd.Parameters.AddWithValue("id", (long)guildId);
                     var reader = cmd.ExecuteReader();
 
-                    while (reader.Read())
+                    // Take the first result if any are present
+                    if (reader.Read())
                     {
-                        return new Guild
+                        guild = new Guild
                         {
                             Id = (ulong)reader.GetInt64(0),
                             Name = reader.GetString(1),
-                            Settings = GetSettings(guildId)
+                            Settings = GetSettings(guildId),
+                            AutoResponses = GetAutoResponses(guildId)
                         };
                     }
                 }
@@ -93,7 +87,29 @@ namespace WhiffBot.Data
                 conn.Close();
             }
 
-            return null;
+            return guild;
+        }
+
+        /// <summary>
+        /// Updates the guild name stored in the database
+        /// </summary>
+        /// <param name="guildId">The guild id of the guild to update</param>
+        /// <param name="guildName">The new name of the guild</param>
+        public void UpdateGuildName(ulong guildId, string guildName)
+        {
+            using (var conn = new NpgsqlConnection(ConnectionString))
+            {
+                conn.Open();
+
+                using (var cmd = new NpgsqlCommand(UPDATE_GUILD_NAME, conn))
+                {
+                    cmd.Parameters.AddWithValue("guildId", (long)guildId);
+                    cmd.Parameters.AddWithValue("guildName", guildName);
+                    cmd.ExecuteNonQuery();
+                }
+
+                conn.Close();
+            }
         }
 
         /// <summary>
@@ -103,6 +119,8 @@ namespace WhiffBot.Data
         /// <returns>The guild settings for this guild</returns>
         public GuildSettings GetSettings(ulong guildId)
         {
+            GuildSettings settings = null;
+
             using (var conn = new NpgsqlConnection(ConnectionString))
             {
                 conn.Open();
@@ -112,9 +130,9 @@ namespace WhiffBot.Data
                     cmd.Parameters.AddWithValue("id", (long)guildId);
                     var reader = cmd.ExecuteReader();
 
-                    while (reader.Read())
+                    if (reader.Read())
                     {
-                        return new GuildSettings
+                        settings = new GuildSettings
                         {
                             Prefix = reader.GetChar(1),
                             AuditChannelId = (ulong?)reader.GetFieldValue<long?>(2),
@@ -131,7 +149,42 @@ namespace WhiffBot.Data
                 conn.Close();
             }
 
-            return null;
+            return settings;
+        }
+
+        public void AddAutoResponse(ulong guildId, string message, string response)
+        {
+            using (var conn = new NpgsqlConnection(ConnectionString))
+            {
+                conn.Open();
+
+                using (var cmd = new NpgsqlCommand(ADD_AUTO_RESPONSE, conn))
+                {
+                    cmd.Parameters.AddWithValue("guildId", (long)guildId);
+                    cmd.Parameters.AddWithValue("message", message);
+                    cmd.Parameters.AddWithValue("response", response);
+                    cmd.ExecuteNonQuery();
+                }
+
+                conn.Close();
+            }
+        }
+
+        public void RemoveAutoResponse(ulong guildId, string message)
+        {
+            using (var conn = new NpgsqlConnection(ConnectionString))
+            {
+                conn.Open();
+
+                using (var cmd = new NpgsqlCommand(REMOVE_AUTO_RESPONSE, conn))
+                {
+                    cmd.Parameters.AddWithValue("guildId", (long)guildId);
+                    cmd.Parameters.AddWithValue("message", message);
+                    cmd.ExecuteNonQuery();
+                }
+
+                conn.Close();
+            }
         }
 
         /// <summary>
@@ -249,6 +302,47 @@ namespace WhiffBot.Data
             }
 
             return roles;
+        }
+
+        private void InitGuildSettings(SocketGuild guild)
+        {
+            using (var conn = new NpgsqlConnection(ConnectionString))
+            {
+                conn.Open();
+
+                using (var cmd = new NpgsqlCommand(INIT_GUILD_SETTINGS, conn))
+                {
+                    cmd.Parameters.AddWithValue("guildId", (long)guild.Id);
+                    var reader = cmd.ExecuteReader();
+                }
+
+                conn.Close();
+            }
+        }
+
+        private Dictionary<string, string> GetAutoResponses(ulong guildId)
+        {
+            var responses = new Dictionary<string, string>();
+
+            using (var conn = new NpgsqlConnection(ConnectionString))
+            {
+                conn.Open();
+
+                using (var cmd = new NpgsqlCommand(GET_GUILD_AUTO_RESPONSES, conn))
+                {
+                    cmd.Parameters.AddWithValue("id", (long)guildId);
+                    var reader = cmd.ExecuteReader();
+
+                    while (reader.Read())
+                    {
+                        responses.Add(reader.GetString(1), reader.GetString(2));
+                    }
+                }
+
+                conn.Close();
+            }
+
+            return responses;
         }
     }
 }
