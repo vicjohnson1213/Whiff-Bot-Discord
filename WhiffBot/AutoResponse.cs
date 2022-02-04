@@ -64,7 +64,7 @@ namespace WhiffBot
 
         private async Task AddResponse(Guild guild, SocketMessage message)
         {
-            var parts = message.Content.Split();
+            var parts = message.Content.Split(' ', StringSplitOptions.RemoveEmptyEntries);
             if (parts.Length < 3)
             {
                 await message.Channel.SendMessageAsync($"```Usage: {guild.Settings.Prefix}addResponse <message> <response>```");
