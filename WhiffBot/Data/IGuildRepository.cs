@@ -1,4 +1,5 @@
 ﻿using Discord.WebSocket;
+using System.Collections.Generic;
 using WhiffBot.Models;
 
 namespace WhiffBot.Data
@@ -13,6 +14,7 @@ namespace WhiffBot.Data
         public void SetAuditLogChannel(ulong guildId, ulong channelId);
         public void AddAssignableRole(ulong guildId, string reaction, ulong roleId);
         public void RemoveAssignableRole(ulong guildId, ulong roleId);
+        public Dictionary<string, string> GetAutoResponses(ulong guildId);
         public void AddAutoResponse(ulong guildId, string message, string response);
         public void RemoveAutoResponse(ulong guildId, string message);
     }

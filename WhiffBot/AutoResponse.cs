@@ -51,6 +51,9 @@ namespace WhiffBot
 
         private async Task HandleCommand(Guild guild, SocketMessage message)
         {
+            if (message.Content.StartsWith($"{guild.Settings.Prefix}responses"))
+                await ListResponses(guild, message);
+
             var isAdmin = (message.Author as SocketGuildUser).GuildPermissions.Administrator;
 
             if (!isAdmin)
@@ -88,6 +91,20 @@ namespace WhiffBot
             _guildRepo.RemoveAutoResponse(guild.Id, parts[1]);
 
             await message.AddReactionAsync(new Emoji("👍"));
+        }
+
+        private async Task ListResponses(Guild guild, SocketMessage message)
+        {
+            var responses = _guildRepo.GetAutoResponses(guild.Id);
+
+            var response = "```";
+
+            foreach (var r in responses.Keys)
+                response += $"{r}\n";
+
+            response += "```";
+
+            await message.Channel.SendMessageAsync(response);
         }
     }
 }

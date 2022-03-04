@@ -271,6 +271,36 @@ namespace WhiffBot.Data
         }
 
         /// <summary>
+        /// Gets the autoresponses for a sesrver
+        /// </summary>
+        /// <param name="guildId"></param>
+        /// <returns></returns>
+        public Dictionary<string, string> GetAutoResponses(ulong guildId)
+        {
+            var responses = new Dictionary<string, string>();
+
+            using (var conn = new NpgsqlConnection(ConnectionString))
+            {
+                conn.Open();
+
+                using (var cmd = new NpgsqlCommand(GET_GUILD_AUTO_RESPONSES, conn))
+                {
+                    cmd.Parameters.AddWithValue("id", (long)guildId);
+                    var reader = cmd.ExecuteReader();
+
+                    while (reader.Read())
+                    {
+                        responses.Add(reader.GetString(1), reader.GetString(2));
+                    }
+                }
+
+                conn.Close();
+            }
+
+            return responses;
+        }
+
+        /// <summary>
         /// Gets all assignable roles for a guild.
         /// </summary>
         /// <param name="guildId">The guild id of the guild to get roles for</param>
@@ -318,31 +348,6 @@ namespace WhiffBot.Data
 
                 conn.Close();
             }
-        }
-
-        private Dictionary<string, string> GetAutoResponses(ulong guildId)
-        {
-            var responses = new Dictionary<string, string>();
-
-            using (var conn = new NpgsqlConnection(ConnectionString))
-            {
-                conn.Open();
-
-                using (var cmd = new NpgsqlCommand(GET_GUILD_AUTO_RESPONSES, conn))
-                {
-                    cmd.Parameters.AddWithValue("id", (long)guildId);
-                    var reader = cmd.ExecuteReader();
-
-                    while (reader.Read())
-                    {
-                        responses.Add(reader.GetString(1), reader.GetString(2));
-                    }
-                }
-
-                conn.Close();
-            }
-
-            return responses;
         }
     }
 }
