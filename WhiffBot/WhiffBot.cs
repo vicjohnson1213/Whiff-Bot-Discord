@@ -77,7 +77,7 @@ namespace WhiffBot
             new Audit(Client, GuildRepo);
             new RA.RoleAssignment(Client, GuildRepo);
             new CommandHandler(Client, GuildRepo);
-            new AutoReponse(Client, GuildRepo);
+            new AutoResponse(Client, GuildRepo);
         }
 
         private Task UpdateGuild(SocketGuild oldGuild, SocketGuild newGuild)
