@@ -53,6 +53,8 @@ namespace WhiffBot
         {
             if (message.Content.StartsWith($"{guild.Settings.Prefix}responses"))
                 await ListResponses(guild, message);
+            else if (message.Content.StartsWith($"{guild.Settings.Prefix}randomResponse"))
+                await SendRandomResponse(guild, message);
 
             var isAdmin = (message.Author as SocketGuildUser).GuildPermissions.Administrator;
 
@@ -106,6 +108,16 @@ namespace WhiffBot
                 response += $"{r}\n";
 
             response += "```";
+
+            await message.Channel.SendMessageAsync(response);
+        }
+
+        private async Task SendRandomResponse(Guild guild, SocketMessage message)
+        {
+            var responses = _guildRepo.GetAutoResponses(guild.Id);
+
+            var rand = new Random();
+            var response = responses.ElementAt(rand.Next(0, responses.Count)).Value;
 
             await message.Channel.SendMessageAsync(response);
         }
