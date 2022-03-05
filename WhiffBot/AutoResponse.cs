@@ -99,7 +99,10 @@ namespace WhiffBot
 
             var response = "```";
 
-            foreach (var r in responses.Keys)
+            var messages = new List<string>(responses.Keys);
+            messages.Sort();
+
+            foreach (var r in responses.Keys.ToList().OrderBy(k => k))
                 response += $"{r}\n";
 
             response += "```";
