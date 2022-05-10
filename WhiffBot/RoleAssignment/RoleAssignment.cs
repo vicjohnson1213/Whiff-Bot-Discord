@@ -4,7 +4,7 @@ using Discord.WebSocket;
 using System.Linq;
 using System.Threading.Tasks;
 using WhiffBot.Data;
-using WhiffBot.Models;
+using WhiffBot.Model;
 
 namespace WhiffBot.RoleAssignment
 {
@@ -36,8 +36,11 @@ namespace WhiffBot.RoleAssignment
         /// <param name="channel">The channel the message/reaction are in</param>
         /// <param name="reaction">The reaction by the user</param>
         /// <returns></returns>
-        private async Task OnReactionAdded(Cacheable<IUserMessage, ulong> message, ISocketMessageChannel channel, SocketReaction reaction)
+        private async Task OnReactionAdded(Cacheable<IUserMessage, ulong> messageCached, Cacheable<IMessageChannel, ulong> channelCached, SocketReaction reaction)
         {
+            var message = await messageCached.GetOrDownloadAsync();
+            var channel = await channelCached.GetOrDownloadAsync();
+
             var guildChannel = channel as SocketTextChannel;
             var guild = GuildRepo.Get(guildChannel.Guild.Id);
             var user = reaction.User.Value as SocketGuildUser;
@@ -67,10 +70,12 @@ namespace WhiffBot.RoleAssignment
         /// <param name="channel">The channel the message/reaction are in</param>
         /// <param name="reaction">The reaction removed by the user</param>
         /// <returns></returns>
-        private async Task OnReactionRemoved(Cacheable<IUserMessage, ulong> message, ISocketMessageChannel channel, SocketReaction reaction)
+        private async Task OnReactionRemoved(Cacheable<IUserMessage, ulong> messageCached, Cacheable<IMessageChannel, ulong> channelCached, SocketReaction reaction)
         {
-            var guildChannel = channel as SocketTextChannel;
+            var message = await messageCached.GetOrDownloadAsync();
+            var channel = await channelCached.GetOrDownloadAsync();
 
+            var guildChannel = channel as SocketTextChannel;
             var guild = GuildRepo.Get(guildChannel.Guild.Id);
 
             if (message.Id != guild.Settings.RoleAssignment.MessageId)

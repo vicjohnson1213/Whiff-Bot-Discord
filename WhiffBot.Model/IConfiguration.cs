@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace WhiffBot.Configuration
+namespace WhiffBot.Model.Configuration
 {
     public interface IConfiguration
     {

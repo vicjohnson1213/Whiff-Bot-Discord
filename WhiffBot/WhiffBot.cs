@@ -3,7 +3,7 @@ using Discord.WebSocket;
 using System;
 using System.Threading.Tasks;
 using WhiffBot.Commands;
-using Conf = WhiffBot.Configuration;
+using Conf = WhiffBot.Model.Configuration;
 using WhiffBot.Data;
 using RA = WhiffBot.RoleAssignment;
 
@@ -65,7 +65,11 @@ namespace WhiffBot
             var guild = GuildRepo.Get(discordGuild.Id);
 
             if (guild == null)
-                GuildRepo.InitGuild(discordGuild);
+                GuildRepo.InitGuild(new Model.Guild
+                {
+                    Id = discordGuild.Id,
+                    Name = discordGuild.Name
+                });
             else
                 GuildRepo.UpdateGuildName(discordGuild.Id, discordGuild.Name);
 

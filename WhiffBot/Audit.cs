@@ -1,4 +1,5 @@
-﻿using Discord.WebSocket;
+﻿using Discord;
+using Discord.WebSocket;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -18,7 +19,7 @@ namespace WhiffBot
 
             Client.GuildMemberUpdated += LogUserNameChange;
             Client.UserJoined += CreateUserLogger("JOIN");
-            Client.UserLeft += CreateUserLogger("LEAVE");
+            Client.UserLeft += CreateGuildUserLogger("LEAVE");
             Client.UserBanned += CreateUserGuildLogger("BANNED");
             Client.UserUnbanned += CreateUserGuildLogger("UNBANNED");
 
@@ -38,29 +39,24 @@ namespace WhiffBot
         /// </summary>
         /// <param name="message">The message sent</param>
         /// <returns></returns>
-        private Task OnMessage(SocketMessage message)
+        private async Task OnMessage(SocketMessage message)
         {
             // Only human administrators can manage the role assignment channel.
             if (message.Author.IsBot || !(message.Author as SocketGuildUser).GuildPermissions.Administrator)
-                return Task.CompletedTask;
+                return;
 
             var channel = message.Channel as SocketTextChannel;
             if (channel == null)
-                return Task.CompletedTask;
+                return;
 
             var guild = GuildRepo.Get(channel.Guild.Id);
 
             var parts = message.Content.Split();
             if (parts[0] == $"{guild.Settings.Prefix}setAuditChannel")
             {
-                var auditChannel = message.MentionedChannels.FirstOrDefault();
-                if (auditChannel == null)
-                    return Task.CompletedTask;
-
-                GuildRepo.SetAuditLogChannel(guild.Id, auditChannel.Id);
+                GuildRepo.SetAuditLogChannel(guild.Id, message.Channel.Id);
+                await message.AddReactionAsync(new Emoji("👍"));
             }
-
-            return Task.CompletedTask;
         }
 
         /// <summary>
@@ -103,6 +99,11 @@ namespace WhiffBot
 
                 await channel.SendMessageAsync($"```{property} [{user.Username}#{user.Discriminator}]```");
             };
+        }
+
+        private Func<SocketGuild, SocketUser, Task> CreateGuildUserLogger(string property)
+        {
+            return async (discordGuild, user) => await CreateUserGuildLogger(property)(user, discordGuild);
         }
 
         /// <summary>
@@ -157,8 +158,9 @@ namespace WhiffBot
         /// <param name="oldUser">The user before the update</param>
         /// <param name="newUser">The user after the update</param>
         /// <returns>The task completion</returns>
-        private async Task LogUserNameChange(SocketGuildUser oldUser, SocketGuildUser newUser)
+        private async Task LogUserNameChange(Cacheable<SocketGuildUser, ulong> oldUserCached, SocketGuildUser newUser)
         {
+            var oldUser = await oldUserCached.GetOrDownloadAsync();
             if (oldUser.Nickname == newUser.Nickname)
                 return;
 

@@ -1,8 +1,7 @@
-﻿using Discord.WebSocket;
-using Npgsql;
+﻿using Npgsql;
 using System.Collections.Generic;
-using WhiffBot.Configuration;
-using WhiffBot.Models;
+using WhiffBot.Model.Configuration;
+using WhiffBot.Model;
 
 namespace WhiffBot.Data
 {
@@ -34,7 +33,7 @@ namespace WhiffBot.Data
             ConnectionString = config.ConnectionString;
         }
 
-        public void InitGuild(SocketGuild guild)
+        public void InitGuild(Guild guild)
         {
             using (var conn = new NpgsqlConnection(ConnectionString))
             {
@@ -334,7 +333,7 @@ namespace WhiffBot.Data
             return roles;
         }
 
-        private void InitGuildSettings(SocketGuild guild)
+        private void InitGuildSettings(Guild guild)
         {
             using (var conn = new NpgsqlConnection(ConnectionString))
             {

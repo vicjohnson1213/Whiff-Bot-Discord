@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using WhiffBot.Data;
-using WhiffBot.Models;
+using WhiffBot.Model;
 
 namespace WhiffBot
 {

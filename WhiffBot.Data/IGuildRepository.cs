@@ -1,12 +1,11 @@
-﻿using Discord.WebSocket;
-using System.Collections.Generic;
-using WhiffBot.Models;
+﻿using System.Collections.Generic;
+using WhiffBot.Model;
 
 namespace WhiffBot.Data
 {
     public interface IGuildRepository
     {
-        public void InitGuild(SocketGuild guild);
+        public void InitGuild(Guild guild);
         public Guild Get(ulong guildId);
         public void UpdateGuildName(ulong guildId, string guildName);
         public GuildSettings GetSettings(ulong guildId);

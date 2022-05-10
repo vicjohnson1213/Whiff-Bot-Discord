@@ -1,4 +1,4 @@
-﻿namespace WhiffBot.Models
+﻿namespace WhiffBot.Model
 {
     public class GuildSettings
     {

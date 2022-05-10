@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace WhiffBot.Configuration
+namespace WhiffBot.Model.Configuration
 {
     public class Configuration : IConfiguration
     {
