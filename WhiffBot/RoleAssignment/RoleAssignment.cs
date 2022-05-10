@@ -48,7 +48,7 @@ namespace WhiffBot.RoleAssignment
             if (message.Id != guild.Settings.RoleAssignment.MessageId)
                 return;
 
-            var roleToAdd = guild.Settings.RoleAssignment.Roles.Find(r => r.Reaction == reaction.Emote.Name);
+            var roleToAdd = guild.Settings.RoleAssignment.Roles.Find(r => r.Reaction == reaction.Emote.ToString());
 
             // If a user adds an unknown reaction, just delete it.
             if (roleToAdd == null)
@@ -81,12 +81,16 @@ namespace WhiffBot.RoleAssignment
             if (message.Id != guild.Settings.RoleAssignment.MessageId)
                 return;
 
-            var roleToRemove = guild.Settings.RoleAssignment.Roles.Find(r => r.Reaction == reaction.Emote.Name);
+            var roleToRemove = guild.Settings.RoleAssignment.Roles.Find(r => r.Reaction == reaction.Emote.ToString());
 
             if (roleToRemove == null)
                 return;
 
             var discordRoleToRemove = guildChannel.Guild.GetRole(roleToRemove.RoleId);
+
+            if (discordRoleToRemove == null)
+                return;
+
             var user = reaction.User.Value as SocketGuildUser;
             await user.RemoveRoleAsync(discordRoleToRemove);
         }
@@ -149,7 +153,6 @@ namespace WhiffBot.RoleAssignment
             else if (parts[0] == $"{guild.Settings.Prefix}updateMessage")
             {
                 await UpdateAssignerMessage(channel.Guild);
-                await message.DeleteAsync();
             }
 
             await channel.DeleteMessageAsync(message);
@@ -160,7 +163,7 @@ namespace WhiffBot.RoleAssignment
         /// </summary>
         /// <param name="discordGuild">The guild being operated on</param>
         /// <param name="guild">The stored guild information</param>
-        /// <param name="reaction">The reaction emoji</param>
+        /// <param name="reaction">The reaction emote</param>
         /// <param name="role">The role to make assignable</param>
         /// <param name="messageToDelete">The sent message that should be deleted</param>
         /// <returns></returns>
@@ -176,7 +179,7 @@ namespace WhiffBot.RoleAssignment
 
             GuildRepo.AddAssignableRole(discordGuild.Id, reaction, role.Id);
             var message = await UpdateAssignerMessage(discordGuild);
-            await message.AddReactionAsync(new Emoji(reaction));
+            await message.AddReactionAsync(reaction.ToEmojiOrEmote());
         }
 
         /// <summary>
@@ -194,7 +197,7 @@ namespace WhiffBot.RoleAssignment
             GuildRepo.RemoveAssignableRole(discordGuild.Id, role.Id);
             var message = await UpdateAssignerMessage(discordGuild);
             var emojiToRemove = guild.Settings.RoleAssignment.Roles.Find(r => r.RoleId == role.Id);
-            await message.RemoveAllReactionsForEmoteAsync(new Emoji(emojiToRemove.Reaction));
+            await message.RemoveAllReactionsForEmoteAsync(emojiToRemove.Reaction.ToEmojiOrEmote());
         }
 
         /// <summary>
@@ -207,7 +210,7 @@ namespace WhiffBot.RoleAssignment
         {
             var content = CreateAssignerMessage(channel.Guild, guild.Settings.RoleAssignment);
             var result = await channel.SendMessageAsync(content);
-            await result.AddReactionsAsync(guild.Settings.RoleAssignment.Roles.Select(r => new Emoji(r.Reaction)));
+            await result.AddReactionsAsync(guild.Settings.RoleAssignment.Roles.Select(r => r.Reaction.ToEmojiOrEmote()));
 
             GuildRepo.SaveRoleAssignmentSettings(guild.Id, channel.Id, result.Id);
         }
@@ -226,6 +229,16 @@ namespace WhiffBot.RoleAssignment
 
             if (assignerMessage == null)
                 assignerMessage = await assignerChannel.GetMessageAsync(guild.Settings.RoleAssignment.MessageId.Value) as RestUserMessage;
+
+            // Search for any roles that may have been deleted without WhiffBot's knowledge
+            // and delete those rows from the database.
+            foreach (var role in guild.Settings.RoleAssignment.Roles)
+                if (discordGuild.GetRole(role.RoleId) == null)
+                {
+                    GuildRepo.RemoveAssignableRole(guild.Id, role.RoleId);
+                    await assignerMessage.RemoveAllReactionsForEmoteAsync(role.Reaction.ToEmojiOrEmote());
+                    guild = GuildRepo.Get(discordGuild.Id);
+                }
 
             var newContent = CreateAssignerMessage(discordGuild, guild.Settings.RoleAssignment);
             await assignerMessage.ModifyAsync(m => m.Content = newContent);

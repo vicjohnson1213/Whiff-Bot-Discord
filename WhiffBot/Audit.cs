@@ -55,7 +55,7 @@ namespace WhiffBot
             if (parts[0] == $"{guild.Settings.Prefix}setAuditChannel")
             {
                 GuildRepo.SetAuditLogChannel(guild.Id, message.Channel.Id);
-                await message.AddReactionAsync(new Emoji("👍"));
+                await message.AddReactionAsync(new Emoji("\uD83D\uDC4D"));
             }
         }
 

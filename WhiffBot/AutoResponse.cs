@@ -78,7 +78,7 @@ namespace WhiffBot
 
             _guildRepo.AddAutoResponse(guild.Id, parts[1], string.Join(' ', parts.Skip(2)));
 
-            await message.AddReactionAsync(new Emoji("👍"));
+            await message.AddReactionAsync(new Emoji("\uD83D\uDC4D"));
         }
 
         private async Task RemoveResponse(Guild guild, SocketMessage message)
@@ -92,7 +92,7 @@ namespace WhiffBot
 
             _guildRepo.RemoveAutoResponse(guild.Id, parts[1]);
 
-            await message.AddReactionAsync(new Emoji("👍"));
+            await message.AddReactionAsync(new Emoji("\uD83D\uDC4D"));
         }
 
         private async Task ListResponses(Guild guild, SocketMessage message)

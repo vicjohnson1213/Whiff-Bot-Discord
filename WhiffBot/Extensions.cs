@@ -22,6 +22,22 @@ namespace WhiffBot
         }
 
         /// <summary>
+        /// Attempts to parse an emote from a string. If that fails, the input is assumed
+        /// to be an emoji.
+        /// </summary>
+        /// <param name="str">The string to convert to an IEmote</param>
+        /// <returns></returns>
+        public static IEmote ToEmojiOrEmote(this string str)
+        {
+            Emote emote;
+
+            if (Emote.TryParse(str, out emote))
+                return emote;
+
+            return new Emoji(str);
+        }
+
+        /// <summary>
         /// Shuffles a list of elements.
         /// </summary>
         /// <typeparam name="T">The type of the element in the list.</typeparam>
