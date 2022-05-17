@@ -14,6 +14,7 @@ namespace WhiffBot.Data
 
         private readonly string UPDATE_GUILD_NAME = "UPDATE guild g SET name = @guildName where id = @guildId";
 
+        private readonly string GET_GUILDS = "SELECT * FROM guild g";
         private readonly string GET_GUILD = "SELECT * FROM guild g WHERE g.id = @id LIMIT 1";
         private readonly string GET_GUILD_SETTINGS = "SELECT * FROM guild_settings gs WHERE gs.guild_id = @id LIMIT 1";
         private readonly string GET_GUILD_ROLE_ASSIGNMENT_ROLES = "SELECT * FROM guild_role_assignment gra WHERE gra.guild_id = @id";
@@ -50,6 +51,30 @@ namespace WhiffBot.Data
             }
 
             InitGuildSettings(guild);
+        }
+
+        public List<Guild> GetJoinedGuilds()
+        {
+            var guilds = new List<Guild>();
+
+            using (var conn = new NpgsqlConnection(ConnectionString))
+            {
+                conn.Open();
+
+                using (var cmd = new NpgsqlCommand(GET_GUILDS, conn))
+                {
+                    var reader = cmd.ExecuteReader();
+
+                    while (reader.Read())
+                        guilds.Add(new Guild
+                        {
+                            Id = (ulong)reader.GetInt64(0),
+                            Name = reader.GetString(1)
+                        });
+                }
+            }
+
+            return guilds;
         }
 
         /// <summary>
