@@ -20,7 +20,10 @@ namespace WhiffBot
         {
             var config = new Conf.Configuration();
 
-            var discordConfig = new DiscordSocketConfig { MessageCacheSize = 10 };
+            var discordConfig = new DiscordSocketConfig {
+                MessageCacheSize = 10,
+                GatewayIntents = GatewayIntents.All
+            };
             Client = new DiscordSocketClient(discordConfig);
             GuildRepo = new GuildRepository(config);
 
