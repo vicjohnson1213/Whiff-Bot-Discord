@@ -30,7 +30,7 @@ namespace WhiffBot.Commands
                 return;
             }
 
-            var activeUsers = voiceChannel.Users
+            var activeUsers = voiceChannel.ConnectedUsers
                 .Where(u => !u.IsBot)
                 .Select(u => u.Username)
                 .ToList()
