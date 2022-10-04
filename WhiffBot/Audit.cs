@@ -172,7 +172,7 @@ namespace WhiffBot
             if (channel == null)
                 return;
 
-            var discriminator = oldUser.DiscriminatorValue.toString()
+            var discriminator = oldUser.DiscriminatorValue.toString();
             var fullUsername = $"{oldUser.Username}#{discriminator}"
 
             await channel.SendMessageAsync($"```NAME CHANGE: [{fullUsername}] {oldUser.Nickname ?? oldUser.Username} => {newUser.Nickname ?? newUser.Username}```");
