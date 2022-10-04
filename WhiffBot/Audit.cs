@@ -172,7 +172,7 @@ namespace WhiffBot
             if (channel == null)
                 return;
 
-            await channel.SendMessageAsync($"```NAME CHANGE: [{oldUser.Username}] => [{newUser.Nickname ?? newUser.Username}]```");
+            await channel.SendMessageAsync($"```NAME CHANGE [{oldUser}] [{oldUser.Nickname ?? oldUser.Username}] => [{newUser.Nickname ?? newUser.Username}]```");
         }
 
         /// <summary>
@@ -197,7 +197,7 @@ namespace WhiffBot
             if (channel == null)
                 return;
 
-            await channel.SendMessageAsync($"```CHANNEL NAME CHANGE: [{oldGuildChannel.Name}] => [{newGuildChannel.Name}]```");
+            await channel.SendMessageAsync($"```CHANNEL NAME CHANGE [{oldGuildChannel.Name}] => [{newGuildChannel.Name}]```");
         }
 
         /// <summary>
@@ -218,7 +218,7 @@ namespace WhiffBot
             if (channel == null)
                 return;
 
-            await channel.SendMessageAsync($"```ROLE NAME CHANGE: [{oldRole.Name}] => [{newRole.Name}]```");
+            await channel.SendMessageAsync($"```ROLE NAME CHANGE [{oldRole.Name}] => [{newRole.Name}]```");
         }
     }
 }
